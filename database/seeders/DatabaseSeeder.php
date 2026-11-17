@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         $email = env('OWNER_EMAIL');
         $password = env('OWNER_PASSWORD');
-        if (! $email || ! $password || Validator::make(['password' => $password], ['password' => ['required', 'string', 'min:12', 'max:72', new PasswordInput]])->fails()) {
-            $this->command?->warn('Set OWNER_EMAIL and OWNER_PASSWORD (12+ characters) to create the owner. No default credentials are installed.');
+        if (! $email || ! $password || Validator::make(['password' => $password], ['password' => ['required', 'string', 'min:8', 'max:72', new PasswordInput]])->fails()) {
+            $this->command?->warn('Set OWNER_EMAIL and OWNER_PASSWORD (8+ characters) to create the owner. No default credentials are installed.');
 
             return;
         }

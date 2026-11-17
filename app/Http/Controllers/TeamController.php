@@ -62,7 +62,7 @@ class TeamController extends Controller
     public function password(Request $request, User $user)
     {
         $this->authorizeStaff($request, $user);
-        $data = $request->validate(['current_password' => ['bail', 'required', 'string', 'max:200', 'current_password'], 'password' => ['required', 'string', 'min:12', 'max:72', new PasswordInput, 'confirmed']]);
+        $data = $request->validate(['current_password' => ['bail', 'required', 'string', 'max:200', 'current_password'], 'password' => ['required', 'string', 'min:8', 'max:72', new PasswordInput, 'confirmed']]);
         DB::transaction(function () use ($request, $user, $data) {
             $member = User::lockForUpdate()->findOrFail($user->id);
             $this->authorizeStaff($request, $member);

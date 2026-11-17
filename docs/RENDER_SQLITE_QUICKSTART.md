@@ -5,7 +5,7 @@ This is the default deployment in `render.yaml`. No separate database, paid disk
 ## Deploy
 
 1. In Render, choose **New → Blueprint** and connect `nahsir12390/Cloud-Based-Platform-for-Data-Aggregation-and-Real-Time-Analytics.`. Use the root `render.yaml` and the Free plan.
-2. Enter the requested private environment settings: `APP_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`, and `DEPLOY_DEMO_STAFF_PASSWORD`. Both passwords must be at least 12 characters, at most 72. Generate the key once on your computer with `php artisan key:generate --show`. Keep it stable across deploys. Never commit actual keys or passwords.
+2. Enter the requested private environment settings: `APP_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`, and `DEPLOY_DEMO_STAFF_PASSWORD`. Both passwords must be at least 8 characters, at most 72. Generate the key once on your computer with `php artisan key:generate --show`. Keep it stable across deploys. Never commit actual keys or passwords.
 3. Apply the Blueprint. Docker installs PHP dependencies; startup migrates SQLite, creates the owner, loads sample records and starts Apache plus the ingestion worker.
 4. Open the Render service URL and sign in with your configured owner email/password. Check `/api/health/ready`; it should return `{"status":"ok"}`.
 5. Demonstrate branches, dashboard, inventory, sales, reports, CSV imports and source API keys. Sample staff use the password configured in `DEPLOY_DEMO_STAFF_PASSWORD`.
@@ -26,3 +26,7 @@ For a blank demonstration, set `DEPLOY_SEED_DEMO=false`; the owner is still crea
 - CSV uploads waiting: inspect the ingestion worker logs. Apache and the worker run in the same free container.
 
 Storage limitations: https://render.com/docs/free
+
+## Password setup
+
+The minimum password length is eight characters, so `password` is accepted for this school demonstration. Set both `OWNER_PASSWORD` and `DEPLOY_DEMO_STAFF_PASSWORD` in Render. They are independent settings: an accepted owner password does not satisfy the demo staff setting. Startup names `DEPLOY_DEMO_STAFF_PASSWORD` if that setting is missing or invalid. Existing account passwords are preserved while the SQLite database exists.

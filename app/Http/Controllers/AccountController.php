@@ -21,7 +21,7 @@ class AccountController extends Controller
 
     public function password(Request $request)
     {
-        $data = $request->validate(['current_password' => ['bail', 'required', 'string', 'max:200', 'current_password'], 'password' => ['required', 'string', 'min:12', 'max:72', new PasswordInput, 'confirmed', 'different:current_password']]);
+        $data = $request->validate(['current_password' => ['bail', 'required', 'string', 'max:200', 'current_password'], 'password' => ['required', 'string', 'min:8', 'max:72', new PasswordInput, 'confirmed', 'different:current_password']]);
         $user = DB::transaction(function () use ($request, $data) {
             $user = User::lockForUpdate()->findOrFail($request->user()->id);
             abort_unless($user->is_active && $user->auth_version === $request->user()->auth_version, 409, 'Account changed. Sign in again.');

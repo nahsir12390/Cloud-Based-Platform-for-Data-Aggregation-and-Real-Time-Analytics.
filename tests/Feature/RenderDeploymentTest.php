@@ -149,6 +149,36 @@ class RenderDeploymentTest extends TestCase
         $this->artisan('db:seed', ['--class' => DemoSeeder::class, '--force' => true])->run();
     }
 
+    public function test_production_demo_deployment_accepts_password_for_owner_and_staff(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+        config(['app.debug' => false, 'deployment.ephemeral_sqlite' => true,
+            'deployment.owner_email' => 'demo-owner@example.test', 'deployment.owner_password' => 'password',
+            'deployment.seed_demo' => true, 'deployment.demo_staff_password' => 'password',
+        ]);
+        $this->artisan('branchflow:deploy', ['--attempts' => 1])->assertSuccessful();
+        $this->assertDatabaseCount('sales', 726);
+        $this->app->detectEnvironment(fn () => 'testing');
+        $this->post('/login', ['email' => 'demo-owner@example.test', 'password' => 'password'])->assertRedirect('/dashboard');
+        $this->assertAuthenticatedAs(User::where('email', 'demo-owner@example.test')->firstOrFail());
+        foreach (User::where('role', 'staff')->get() as $staff) {
+            $this->assertTrue(Hash::check('password', $staff->password));
+        }
+    }
+
+    public function test_deployment_identifies_the_invalid_demo_staff_setting(): void
+    {
+        User::factory()->create(['role' => 'owner']);
+        $this->app->detectEnvironment(fn () => 'production');
+        config(['app.debug' => false, 'deployment.ephemeral_sqlite' => true,
+            'deployment.seed_demo' => true, 'deployment.demo_staff_password' => 'short',
+        ]);
+        $this->artisan('branchflow:deploy', ['--attempts' => 1])
+            ->expectsOutputToContain('Set DEPLOY_DEMO_STAFF_PASSWORD')
+            ->assertFailed();
+        $this->assertDatabaseCount('sales', 0);
+    }
+
     public function test_deployment_restarts_do_not_extend_the_seeded_dataset_each_day(): void
     {
         $this->freezeTime();

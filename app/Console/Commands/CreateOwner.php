@@ -18,8 +18,8 @@ class CreateOwner extends Command
     {
         $name = $this->option('name') ?? $this->ask('Owner name');
         $email = $this->option('email') ?? $this->ask('Owner email');
-        $password = $this->secret('Password (at least 12 characters)');
-        $v = Validator::make(compact('name', 'email', 'password'), ['name' => 'required|string|max:100', 'email' => 'required|email|unique:users', 'password' => ['required', 'string', 'min:12', 'max:72', new PasswordInput]]);
+        $password = $this->secret('Password (at least 8 characters)');
+        $v = Validator::make(compact('name', 'email', 'password'), ['name' => 'required|string|max:100', 'email' => 'required|email|unique:users', 'password' => ['required', 'string', 'min:8', 'max:72', new PasswordInput]]);
         if ($v->fails()) {
             foreach ($v->errors()->all() as $e) {
                 $this->error($e);

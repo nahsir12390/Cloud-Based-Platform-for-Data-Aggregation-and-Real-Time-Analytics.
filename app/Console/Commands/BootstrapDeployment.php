@@ -68,9 +68,9 @@ class BootstrapDeployment extends Command
         }
         if (! User::where('role', 'owner')->exists()) {
             $data = ['name' => config('deployment.owner_name'), 'email' => config('deployment.owner_email'), 'password' => config('deployment.owner_password')];
-            $validation = Validator::make($data, ['name' => 'required|string|max:100', 'email' => 'required|email|max:200', 'password' => ['required', 'string', 'min:12', 'max:72', new PasswordInput]]);
+            $validation = Validator::make($data, ['name' => 'required|string|max:100', 'email' => 'required|email|max:200', 'password' => ['required', 'string', 'min:8', 'max:72', new PasswordInput]]);
             if ($validation->fails()) {
-                $this->error('Set OWNER_NAME, OWNER_EMAIL and a valid OWNER_PASSWORD (12+ characters) for the first deployment.');
+                $this->error('Set OWNER_NAME, OWNER_EMAIL and a valid OWNER_PASSWORD (8+ characters) for the first deployment.');
 
                 return self::FAILURE;
             }
@@ -85,6 +85,14 @@ class BootstrapDeployment extends Command
             $this->info('Existing owner preserved.');
         }
         if (config('deployment.seed_demo') && ! AuditLog::where('action', 'demo.seeded')->exists()) {
+            if (app()->environment('production') && Validator::make(
+                ['password' => config('deployment.demo_staff_password')],
+                ['password' => ['required', 'string', 'min:8', 'max:72', new PasswordInput]],
+            )->fails()) {
+                $this->error('Set DEPLOY_DEMO_STAFF_PASSWORD to a valid password (8–72 characters) for the demo staff accounts.');
+
+                return self::FAILURE;
+            }
             if ($this->call('db:seed', ['--class' => DemoSeeder::class, '--force' => true, '--no-interaction' => true]) !== self::SUCCESS) {
                 return self::FAILURE;
             }

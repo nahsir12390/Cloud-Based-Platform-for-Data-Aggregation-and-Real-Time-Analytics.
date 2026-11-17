@@ -68,7 +68,7 @@ class AccountManagementTest extends TestCase
     {
         $oldVersion = $this->staff->auth_version;
         $oldToken = $this->staff->remember_token;
-        $payload = $this->resetPayload($this->staffPassword);
+        $payload = array_merge($this->resetPayload($this->staffPassword), ['password' => 'demo1234', 'password_confirmation' => 'demo1234']);
         $this->actingAs($this->staff)->put('/account/password', $payload)->assertRedirect('/account');
         $updated = $this->staff->fresh();
         $this->assertTrue(Hash::check($payload['password'], $updated->password));

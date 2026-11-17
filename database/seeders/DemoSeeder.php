@@ -34,7 +34,7 @@ class DemoSeeder extends Seeder
             throw new \RuntimeException('Demo data is disabled in production.');
         }
         if (app()->environment('production')) {
-            Validator::make(['password' => config('deployment.demo_staff_password')], ['password' => ['required', 'string', 'min:12', 'max:72', new PasswordInput]])->validate();
+            Validator::make(['DEPLOY_DEMO_STAFF_PASSWORD' => config('deployment.demo_staff_password')], ['DEPLOY_DEMO_STAFF_PASSWORD' => ['required', 'string', 'min:8', 'max:72', new PasswordInput]])->validate();
         }
         $owner = User::where('role', 'owner')->first();
         if (! $owner) {

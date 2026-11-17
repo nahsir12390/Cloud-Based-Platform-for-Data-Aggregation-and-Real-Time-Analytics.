@@ -89,7 +89,7 @@ Do not run `key:generate` on every startup and do not regenerate a key for an ex
 | `APP_KEY` | The complete generated Laravel key |
 | `DB_URL` | The PostgreSQL connection URL |
 | `OWNER_EMAIL` | Email for the first hosted owner |
-| `OWNER_PASSWORD` | Initial private password, 12–72 ASCII characters is a straightforward choice |
+| `OWNER_PASSWORD` | Initial private password, 8–72 ASCII characters is a straightforward choice |
 
 `OWNER_NAME` defaults to Business Owner and can be changed. First deployment creates an owner only if none exists. Later restarts preserve existing owner accounts and passwords, even if bootstrap values change. An existing non-owner with the bootstrap email is not silently promoted.
 
@@ -135,7 +135,7 @@ DEPLOY_SEED_DEMO=true
 DEPLOY_DEMO_STAFF_PASSWORD=YOUR_PRIVATE_DEMO_PASSWORD
 ```
 
-Use a valid 12+ character password within the application's byte limit. The three demo staff accounts use this configured password:
+Use a valid 8+ character password within the application's byte limit. The three demo staff accounts use this configured password:
 
 - `demo.wuse@branchflow.test`
 - `demo.garki@branchflow.test`

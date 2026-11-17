@@ -148,7 +148,7 @@ class WorkspaceController extends Controller
     public function team(Request $r)
     {
         BranchAccess::owner($r->user());
-        $data = $r->validate(['name' => 'required|string|max:100', 'email' => 'required|email|max:200|unique:users', 'password' => ['required', 'string', 'min:12', 'max:72', 'confirmed', new PasswordInput], 'branch_id' => 'required|exists:branches,id']);
+        $data = $r->validate(['name' => 'required|string|max:100', 'email' => 'required|email|max:200|unique:users', 'password' => ['required', 'string', 'min:8', 'max:72', 'confirmed', new PasswordInput], 'branch_id' => 'required|exists:branches,id']);
         DB::transaction(function () use ($r, $data) {
             User::create(['name' => $data['name'], 'email' => $data['email'], 'password' => Hash::make($data['password']), 'role' => 'staff', 'branch_id' => $data['branch_id']]);
             $this->audit($r, (int) $data['branch_id'], 'user.created', 'Created staff account '.$data['email']);
